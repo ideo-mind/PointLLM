@@ -40,5 +40,48 @@ import? "local.justfile"
 
 RANDOM := env("RANDOM", "42")
 
+# Download and prepare Objaverse data
+download-data download_dir="downloads":
+    #!/usr/bin/env bash
+    echo "Creating download directory: {{download_dir}}"
+    mkdir -p {{download_dir}}
+    
+    cd {{download_dir}}
+    
+    if [ ! -f "Objaverse_660K_8192_npy.tar.gz" ]; then
+        if [ ! -f "Objaverse_660K_8192_npy_split_aa" ]; then
+            echo "Downloading split aa..."
+            curl -L -O https://huggingface.co/datasets/RunsenXu/PointLLM/resolve/main/Objaverse_660K_8192_npy_split_aa
+        fi
+        
+        if [ ! -f "Objaverse_660K_8192_npy_split_ab" ]; then
+            echo "Downloading split ab..."
+            curl -L -O https://huggingface.co/datasets/RunsenXu/PointLLM/resolve/main/Objaverse_660K_8192_npy_split_ab
+        fi
+        
+        echo "Merging files..."
+        cat Objaverse_660K_8192_npy_split_a* > Objaverse_660K_8192_npy.tar.gz
+    else
+        echo "Merged archive already exists, skipping download/merge."
+    fi
+    
+    echo "Extracting..."
+    if [ ! -d "8192_npy" ]; then
+        tar -xvf Objaverse_660K_8192_npy.tar.gz
+    else
+        echo "Directory 8192_npy already exists, skipping extraction."
+    fi
+    
+    cd ..
+    
+    echo "Setting up data link..."
+    mkdir -p data
+    if [ ! -L "data/objaverse_data" ]; then
+        ln -s "$(pwd)/{{download_dir}}/8192_npy" data/objaverse_data
+        echo "Link created at data/objaverse_data"
+    else
+        echo "Link data/objaverse_data already exists."
+    fi
+
 
 
