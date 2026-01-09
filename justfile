@@ -18,7 +18,7 @@ _run script *args:
 
 # Start the CLI chat
 chat-cli *opts:
-    PYTHONPATH=. uv run pointllm/eval/PointLLM_chat.py --model_name {{model_name}} --data_name {{data_path}} --torch_dtype float32 {{opts}}
+    PYTHONPATH=. uv run pointllm/eval/PointLLM_chat.py --model_name {{model_name}} --data_path {{data_path}} --torch_dtype float32 {{opts}}
 
 # Start the Gradio web UI
 chat-gradio *opts:
@@ -28,7 +28,7 @@ chat-gradio *opts:
 eval task *opts:
     #!/usr/bin/env bash
     if [ "{{task}}" == "objaverse" ]; then
-        PYTHONPATH=. uv run pointllm/eval/eval_objaverse.py --model_name {{model_name}} {{opts}}
+        PYTHONPATH=. uv run pointllm/eval/eval_objaverse.py --model_name {{model_name}} --data_path {{data_path}} {{opts}}
     elif [ "{{task}}" == "modelnet" ]; then
         PYTHONPATH=. uv run pointllm/eval/eval_modelnet_cls.py --model_name {{model_name}} {{opts}}
     else

@@ -22,7 +22,7 @@ def init_model(args):
     # Model
     disable_torch_init()
 
-    model_path = args.model_path 
+    model_path = args.model_name
     print(f'[INFO] Model name: {model_path}')
 
     tokenizer = AutoTokenizer.from_pretrained(model_path)
